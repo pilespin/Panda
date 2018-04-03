@@ -1,15 +1,19 @@
+#!/usr/bin/env python3
 
 from keras.utils import to_categorical
 from keras.models import Sequential
 from keras.layers import Dense
 from keras import optimizers
 from keras import regularizers
+# from keras.constraints import max_norm
 
 from KerasHelper import KerasHelper
 
 import keras as k
 import numpy as np
 
+import sys
+sys.path.append("data/")
 import data
 
 
@@ -17,7 +21,7 @@ def main():
 
 	KerasHelper.log_level_decrease()
 
-	(X_train, Y_train), (X_test, Y_test) = data.load_data()
+	(X_train, Y_train), (X_test, Y_test) = data.load()
 	Y_train = to_categorical(Y_train, num_classes=2)
 	Y_test = to_categorical(Y_test, num_classes=2)
 	print(X_train)
@@ -29,9 +33,10 @@ def main():
 	hiddenSize = inputSize + 10
 
 	model = Sequential()
-	model.add(Dense(hiddenSize, input_dim=inputSize, activation='tanh'
-		, kernel_regularizer=regularizers.l1_l2(0.01)))
-	model.add(Dense(hiddenSize, activation='tanh', kernel_regularizer=regularizers.l1_l2(0.01)))
+	model.add(Dense(hiddenSize, input_dim=inputSize, activation='tanh'))
+	# model.add(Dense(hiddenSize, input_dim=inputSize, activation='tanh', kernel_regularizer=regularizers.l1_l2(0.01)))
+	# model.add(Dense(hiddenSize, activation='tanh', kernel_regularizer=regularizers.l1_l2(0.01)))
+	# model.add(Dense(hiddenSize, activation='tanh', kernel_regularizer=regularizers.l1_l2(0.01)))
 	model.add(Dense(outputSize, activation='relu'))
 
 	model.compile(loss='binary_crossentropy'
@@ -40,9 +45,10 @@ def main():
 
 	for i in range(1000):
 		model.fit(X_train, Y_train
-					, epochs=1000
+					, epochs=100
 					, batch_size=128
-					, validation_data=(X_test, Y_test))
+					# , validation_data=(X_test, Y_test))
+					, validation_data=(X_train, Y_train))
 
 		KerasHelper.save_model(model, "model")
 

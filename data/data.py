@@ -5,11 +5,11 @@ import numpy as np
 from sklearn import preprocessing
 
 
-def load_data():
+def load():
 	le = preprocessing.LabelEncoder()
 	# lb = preprocessing.LabelBinarizer()
 
-	train_df = pd.read_csv('datasets/train.csv')
+	train_df = pd.read_csv('data/datasets/train.csv')
 	# test_df = pd.read_csv('datasets/test.csv')
 
 	# tmp = train_df[['Embarked', 'Survived']].groupby(['Embarked'], as_index=False).mean().sort_values(by='Survived', ascending=False)
@@ -79,13 +79,13 @@ def load_data():
 
 	train_df = pd.DataFrame(data=train_df)
 
-	forDummies = ['Cabin', 'Sex', 'Embarked', 'Pclass', 'SibSp', 'Parch', 'Family_size', 'Title']
+	forDummies = ['Ticket','Cabin', 'Sex', 'Embarked', 'Pclass', 'SibSp', 'Parch', 'Family_size', 'Title']
 	for label in forDummies:
 		train_df = pd.concat([train_df, pd.get_dummies(train_df[label], prefix=label)], axis=1)
 
 	# train_df = train_df.dropna(axis=0, how='any')
 
-	remove = ['PassengerId', 'Name', 'Ticket'] + forDummies
+	remove = ['Age', 'Fare', 'PassengerId', 'Name'] + forDummies
 	# remove = []
 	train_df = train_df.drop(remove, axis=1)
 
@@ -107,7 +107,7 @@ def load_data():
 
 	############################## Split ##############################
 
-	split = int(len(X_train) * 0.3)
+	split = int(len(X_train) * 0.2)
 
 	X_test = X_train[:split]
 	X_train = X_train[split:]
